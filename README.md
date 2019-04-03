@@ -1,9 +1,9 @@
-# flespi.io API usage Examples
+# flespi.io API usage examples
 
 ## http stream receiver
 
-* [NodeJS](http-stream-receiver/nodejs/README.md)
-* [PHP](http-stream-receiver/php/README.md)
+* [NodeJS](http-stream-receiver/nodejs)
+* [PHP](http-stream-receiver/php)
 
 
 # Contributing
