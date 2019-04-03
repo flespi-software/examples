@@ -8,4 +8,5 @@ Just copy `index.php` file to your preconfigured **nginx** or **apache** (or ano
 ## Stream configuration
 
 **configuration:** `http`
+
 **uri:** `http://yourserver/post`

@@ -12,4 +12,5 @@ $ nodejs server.js
 ## Stream configuration
 
 **configuration:** `http`
+
 **uri:** `http://localhost:7777/post`
