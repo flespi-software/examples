@@ -1,10 +1,12 @@
-# flespi.io API usage examples
+# flespi.io usage examples
 
 ## http stream receiver
 
 * [NodeJS](http-stream-receiver/nodejs)
 * [PHP](http-stream-receiver/php)
+* [Python](http-stream-receiver/python)
 
+More info about http streams: https://flespi.com/kb/stream-forward-data-from-gateway
 
 # Contributing
 
