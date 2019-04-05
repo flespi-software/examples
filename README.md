@@ -10,7 +10,7 @@ More info about http streams: https://flespi.com/kb/stream-forward-data-from-gat
 
 In short:
 
-1. create a **stream** in flespi platform, with the **uri** parameter to something like `http://your-server:port/path-on-server`
+1. create a **stream** in flespi platform, using `http` as **configuration** and something like `http://your-server:port/path-on-server` as **uri** parameter
 2. subscribe created **stream** to items you need
 3. deploy one of examples listed above on your server or VPS
 4. configure your example to listen on `your-server:port` network endpoint and to handle a `/path-on-server` uri
