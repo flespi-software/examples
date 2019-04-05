@@ -1,16 +1,27 @@
 # flespi.io http stream receiver (nodejs)
 
+## Using express.js
 
-## Start server
+Example: [express.js](express.js)
 
-Install **nodejs** and run server:
+Install requirements in the new project:
 
-``` bash
-$ nodejs server.js
-```
+    npm install --save express
 
-## Stream configuration
+**OR** install requirements defined in package.json file in this directory:
 
-**configuration:** `http`
+    npm install
 
-**uri:** `http://localhost:7777/post`
+Then start the HTTP server:
+
+    npm run express
+
+## Using built-in nodejs http server:
+
+Example: [simple.js](simple.js)
+
+No dependencies required.
+
+Start the HTTP server:
+
+    npm run simple

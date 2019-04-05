@@ -1,0 +1,25 @@
+{
+  "name": "flespi-stream-receiver-example",
+  "version": "1.0.0",
+  "description": "flespi.io platform stream receivers examples",
+  "main": "express.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node express.js",
+    "express": "node express.js",
+    "simple": "node simple.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flespi-software/examples.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flespi-software/examples/issues"
+  },
+  "homepage": "https://github.com/flespi-software/examples#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
