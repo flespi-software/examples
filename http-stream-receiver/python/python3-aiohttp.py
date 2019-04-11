@@ -9,6 +9,9 @@ async def handler(request):
     # b'[{"channel.id":94,"ident":"1234","peer":"127.0.0.1:58606","protocol.id":19,
     # "server.timestamp":1554319739.34234,"timestamp":1554319739.34234}]'
 
+    # more details about available message content:
+    # https://flespi.com/kb/messages-basic-information-units
+
     # you may use json_bytes to parse json, using json.loads(json_bytes)
 
     # but in this example we are just storing it in a file

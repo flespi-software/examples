@@ -13,6 +13,9 @@ class MainHandler(tornado.web.RequestHandler):
         # [{"channel.id":94,"ident":"1234","peer":"127.0.0.1:57632","protocol.id":19,
         # "server.timestamp":1554357439.356658,"timestamp":1554357439.356658}]
 
+        # more details about available message content:
+        # https://flespi.com/kb/messages-basic-information-units
+
         # you may use json_str to parse json, using json.loads(json_str)
 
         # but in this example we are just storing it in a file
