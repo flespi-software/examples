@@ -15,6 +15,9 @@ const requestHandler = (request, response) => {
           // now body will be something like this:
           // [{"channel.id":94,"ident":"1234","peer":"127.0.0.1:36260","protocol.id":19,"server.timestamp":1554445625.950464,"timestamp":1554445625.950464}]
 
+          // more details about available message content:
+          // https://flespi.com/kb/messages-basic-information-units
+
           // you may use JSON.parse(body) to parse json
 
           // but in this example we are just storing it in a file

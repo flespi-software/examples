@@ -20,6 +20,9 @@ app.post('/post', (req, res) => {
     'server.timestamp': 1554447820.251666,
     timestamp: 1554447820.251666 } ] */
 
+  // more details about available message content:
+  // https://flespi.com/kb/messages-basic-information-units
+
   // in this example we are just storing it in a file
   // please note that it will be overwritten on each new request
   fs.writeFileSync('messages.json', JSON.stringify(req.body));
