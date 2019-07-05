@@ -6,7 +6,7 @@
 * [PHP](http-stream-receiver/php)
 * [Python](http-stream-receiver/python)
 
-More info about http streams: https://flespi.com/kb/stream-forward-data-from-gateway
+More info about http streams: https://flespi.com/blog/get-data-in-your-platform-via-flespi-http-stream
 
 In short:
 
