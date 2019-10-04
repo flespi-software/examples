@@ -173,7 +173,7 @@
 		}
 
 		function InputDeviceIdents() {
-			info("please input idents for all devices you want to create, one ident per line");
+			info("please input idents for all devices you want to create, one ident per line" + (ident_regexp ? ", matching regexp " + ident_regexp : ""));
 			info("hint: you may create a spreadsheet file with your devices and paste the entire ident's column from it");
 			info("note: empty lines allowed indicating the missing ident configuration property for device on its line");
 			let ta = $('<textarea rows=10 cols=50>');
@@ -252,7 +252,7 @@
 		}
 
 		function InputPhones() {
-			info("please input phones for all devices you want to create, one phone per line");
+			info("please input phones for all devices you want to create, one phone per line" + (phone_regexp ? ", matching regexp " + phone_regexp : ""));
 			info("note: leave this field empty if you don't need phones");
 			info("note: empty lines allowed indicating the missing phone configuration property for device on its line");
 			let ta = $('<textarea rows=10 cols=50>');
