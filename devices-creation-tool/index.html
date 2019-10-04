@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!-- please, frontend guys, don't blame this code, it was written by backend engineer in 4 hours -->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>flespi.io devices bulk creation tool</title>
+	<script src="./jquery-3.4.1.min.js"></script>
+	<style>
+		input[type=text] {
+			min-width: 600px;
+		}
+		.error {
+			background-color: #ff000045;
+		}
+		.info {
+			background-color: #0eff0e61;
+		}
+		#wizzard > p {
+			margin: 2px 0px;
+		}
+		pre {
+			white-space: pre-wrap;
+		}
+	</style>
+</head>
+<body>
+	<h1><a target="_blank" href="https://flespi.io">flespi.io</a> <a target="_blank" href="https://flespi.com/kb/device-virtual-instance-of-real-tracker">devices</a> bulk creation tool</h1>
+	<p>
+		This tool may help you to create many <a target="_blank" href="https://flespi.com/kb/device-virtual-instance-of-real-tracker">devices</a> in your <a target="_blank" href="https://flespi.io">flespi.io</a> account.
+		You have to provide a <a target="_blank" href="https://flespi.com/kb/tokens-access-keys-to-flespi-platform">flespi token</a> to perform all operations.
+	</p>
+	<p>
+		This wizard-like tool can create a lot of devices at once with the specified <a target="_blank" href="https://flespi.io/docs/#/gw/!/protocols/get_protocols_protocol_selector_device_types_devtypes_selector">device type</a>.
+	</p>
+	<p>
+		You have to provide a set of <strong>ident</strong> values and the same number of <strong>name</strong> values.
+		You also may provide optional <strong>phone</strong> values for devices, if selected device type supports it.
+	</p>
+	<p>
+		At the last stage, you may get a cURL command line to create devices (first button) or to create it directly from this page with the second button.
+	</p>
+	<p>
+		If you stuck on some stage - just reload the page with F5 and repeat from scratch.
+	</p>
+	<div id="wizzard">
+		<p>
+			Let's begin. Insert here your flespi token:<br>
+			<input type="text" id="token" placeholder="flespi token, 64 symbols">
+			<button id="set-token">Set token</button>
+		</p>
+	</div>
+
+	<script type="text/javascript">
+		"use strict";
+
+		let platform = "https://flespi.io";
+		let token;
+		let wizzard = $("#wizzard");
+		let device_type_id;
+		let phone_allowed;
+		let ident_regexp, phone_regexp;
+		let idents;
+		let names;
+		let phones;
+		let messages_ttl;
+
+		function error(msg) {
+			wizzard.append($('<p class="error"></p>').text(msg))
+			ScrollDown();
+		}
+
+		function info(msg) {
+			wizzard.append($('<p class="info"></p>').text(msg))
+			ScrollDown();
+		}
+
+		function platform_fetch() {
+			let args = Array.from(arguments);
+
+			args[0] = platform + args[0];
+			if (args[1]) {
+				args[1].headers = args[1].headers || {};
+				args[1].headers["Authorization"] = "FlespiToken " + token;
+			} else
+				args[1] = {headers: {Authorization: "FlespiToken " + token}};
+
+			return fetch.apply(null, args).then(function(resp) {
+				return resp.json();
+			}).then(function(data) {
+				if (data.errors && data.errors.length > 0) {
+					if (data.result.length > 0)
+						error("platform request partial error: " + JSON.stringify(data.errors));
+					else
+						throw JSON.stringify(data.errors);
+				}
+				return data;
+			}).catch(function(err) {
+				error("platform request error: " + err);
+				throw err;
+			});
+		}
+
+		$(function() {
+			$("#set-token").click(function() {
+				let val = $("#token").val().trim();
+				if (val.length == 64) {
+					token = val;
+					NextStep();
+					FetchDeviceTypes();
+				} else
+					error("invalid token value format: expecting 64 symbols");
+			});
+		});
+
+		function ScrollDown() {
+			setTimeout(function() { window.scrollTo(0,document.body.scrollHeight); }, 100);
+		}
+
+		function NextStep() {
+			$("input,button,select,textarea", wizzard).attr("disabled", true);
+			ScrollDown();
+		}
+
+		function FetchDeviceTypes() {
+			info("fetching device types with this token...");
+			platform_fetch("/gw/protocols/all/device-types/all?fields=id,protocol_id,protocol_name,title,configuration").then(function(data) {
+				console.log("device types", data);
+				info("fetched " + data.result.length + " device types, please select one");
+				SelectDeviceType(data.result);
+			});
+		}
+
+		function SelectDeviceType(devtypes) {
+			let sel = $('<select id="device-type"></select>');
+			devtypes.sort(function(t1, t2) {
+				if (t1.protocol_id != t2.protocol_id)
+					return t1.protocol_id - t2.protocol_id;
+				return t1.title < t2.title ? 1 : 0;
+			});
+			let dt_by_id = {};
+			for (let i = 0; i < devtypes.length; i++) {
+				let dt = devtypes[i];
+				let opt = $(
+					'<option value="' + dt.id + '">' +
+					dt.title + " (id=" + dt.id + ", protocol_name=" + dt.protocol_name + " protocol_id=" + dt.protocol_id + ")" +
+					'</option>'
+				);
+				sel.append(opt);
+				dt_by_id[dt.id] = dt;
+			}
+			wizzard.append(sel);
+			wizzard.append(" ");
+			wizzard.append($('<button>Select</button>').click(function() {
+				device_type_id = +sel.val();
+				info("selected device type id: " + device_type_id);
+				console.log("selected device type", device_type_id);
+				let dt = dt_by_id[device_type_id];
+				if (dt.configuration.properties.ident.pattern)
+					ident_regexp = new RegExp(dt.configuration.properties.ident.pattern);
+				if (dt.configuration.properties.phone) {
+					phone_allowed = true;
+					if (dt.configuration.properties.phone.pattern)
+						phone_regexp = new RegExp(dt.configuration.properties.phone.pattern);
+				}
+				console.log("ident_regexp", ident_regexp);
+				console.log("phone_allowed", phone_allowed);
+				console.log("phone_regexp", phone_regexp);
+				NextStep();
+				InputDeviceIdents();
+			}));
+		}
+
+		function InputDeviceIdents() {
+			info("please input idents for all devices you want to create, one ident per line");
+			info("hint: you may create a spreadsheet file with your devices and paste the entire ident's column from it");
+			info("note: empty lines allowed indicating the missing ident configuration property for device on its line");
+			let ta = $('<textarea rows=10 cols=50>');
+			wizzard.append(ta);
+			wizzard.append("<br>");
+			wizzard.append($('<button>Set idents</button>').click(function() {
+				// fetch idents
+				idents = ta.val().trim();
+				if (!idents)
+					return error("no idents found");
+				idents = idents.split("\n");
+				// trim idents
+				idents = idents.map(ident => ident.trim());
+				// check they are unique
+				let dups = {};
+				let stop = false;
+				for (let ident of idents) {
+					if (!ident)
+						continue;
+					if (dups[ident]) {
+						error("ident duplicate: " + ident);
+						stop = true;
+					} else
+						dups[ident] = true;
+				}
+				// check with regexp
+				if (ident_regexp)
+					for (let ident of idents)
+						if (ident && !ident_regexp.test(ident)) {
+							error("invalid ident format: (expecting " + ident_regexp + "): " + ident);
+							stop = true;
+						}
+
+				if (stop)
+					return error("please fix errors and try again");
+
+				info("idents found: " + idents.length);
+				console.log("idents", idents);
+				NextStep();
+				InputDeviceNames();
+			}));
+		}
+
+		function InputDeviceNames() {
+			info("please input names for all devices you want to create, one name per line");
+			info("hint: you may create a spreadsheet file with your devices and paste the entire names column from it");
+			info("note: empty lines is NOT allowed");
+			info("note: using same values as your idents on previous step by default");
+			let ta = $('<textarea rows=10 cols=50>').val(idents.join("\n"));
+			wizzard.append(ta);
+			wizzard.append("<br>");
+			wizzard.append($('<button>Set names</button>').click(function() {
+				// fetch names
+				names = ta.val().trim();
+				if (!names)
+					return error("no names found");
+				names = names.split("\n");
+				// check count
+				if (names.length != idents.length)
+					return error("please use the same number of names as idents on the previous step");
+				// trim names
+				names = names.map(name => name.trim());
+				if (names.some(name => !name))
+					return error("empty name found");
+
+				info("names found: " + names.length);
+				console.log("names", names);
+				NextStep();
+				if (phone_allowed)
+					InputPhones();
+				else {
+					phones = [];
+					InputMessageTTL();
+				}
+			}));
+		}
+
+		function InputPhones() {
+			info("please input phones for all devices you want to create, one phone per line");
+			info("note: leave this field empty if you don't need phones");
+			info("note: empty lines allowed indicating the missing phone configuration property for device on its line");
+			let ta = $('<textarea rows=10 cols=50>');
+			wizzard.append(ta);
+			wizzard.append("<br>");
+			wizzard.append($('<button>Set phones</button>').click(function() {
+				// fetch phones
+				phones = ta.val().trim();
+				if (phones) {
+					phones = phones.split("\n");
+					// check count
+					if (phones.length != idents.length)
+						return error("please use the same number of phones as idents on the previous step");
+					// trim phones
+					phones = phones.map(phone => phone.trim());
+				}
+				// check they are unique
+				let dups = {};
+				let stop = false;
+				for (let phone of phones) {
+					if (!phone)
+						continue;
+					if (dups[phone]) {
+						error("phone duplicate: " + phone);
+						stop = true;
+					} else
+						dups[phone] = true;
+				}
+				// check with regexp
+				if (phone_regexp)
+					for (let phone of phones)
+						if (phone && !phone_regexp.test(phone)) {
+							error("invalid phone format: (expecting " + phone_regexp + "): " + phone);
+							stop = true;
+						}
+
+				if (stop)
+					return error("please fix errors and try again");
+
+				info("phones found: " + phones.length);
+				console.log("phones", phones);
+				NextStep();
+				InputMessageTTL();
+			}));
+		}
+
+		function InputMessageTTL() {
+			info("please input messages_ttl parameter (in seconds) for your devices:");
+			info("note: default value is 31536000, which is 365 days");
+			let input = $('<input type="text" value="31536000" placeholder="messages_ttl in seconds">');
+			wizzard.append(input);
+			wizzard.append(" ");
+			wizzard.append($('<button>Set messages_ttl</button>').click(function() {
+				messages_ttl = parseInt(input.val().trim());
+				if (isNaN(messages_ttl) || messages_ttl < 0 || messages_ttl > 315360000)
+					return error("invalid messages_ttl, it should be non-negative integer <= 315360000");
+
+				info("messages_ttl: " + messages_ttl);
+				console.log("messages_ttl", messages_ttl);
+				NextStep();
+				CreateJSON();
+			}));
+		}
+
+		function CreateJSON() {
+			info("here is a JSON for the devices creation, please inspect/edit it:");
+			let data = [];
+
+			for (let i = 0; i < idents.length; i++) {
+				let dev = {
+					device_type_id: device_type_id,
+					messages_ttl: messages_ttl,
+					name: names[i],
+				};
+				if (idents[i] || phones[i]) {
+					dev.configuration = {}
+				}
+				if (idents[i])
+					dev.configuration.ident = idents[i];
+				if (phones[i])
+					dev.configuration.phone = phones[i];
+				data.push(dev);
+			}
+
+			let ta = $('<textarea rows=30 cols=100>').val(JSON.stringify(data, null, "  "));
+
+			let GetJSON = function() {
+				let json = ta.val();
+				if (JSON.parse(json))
+					return json;
+			}
+
+			wizzard.append(ta);
+			wizzard.append("<br>");
+			wizzard.append($('<button>Show cURL command line</button>').click(function() {
+				let json = GetJSON();
+				if (!json)
+					return error("invalid json with devices data");
+				json = JSON.stringify(JSON.parse(json));
+
+				let curl = "curl -X POST --header 'Authorization: FlespiToken " + token + "' -d '" + json + "' '" + platform  + "/gw/devices'";
+				wizzard.append("<pre>" + curl + "</pre>");
+				ScrollDown();
+			}));
+			wizzard.append(" OR ");
+
+			wizzard.append($('<button>Create devices</button>').click(function() {
+				let json = GetJSON();
+				if (!json)
+					return error("invalid json with devices data");
+
+				info("creating devices...");
+				platform_fetch("/gw/devices", {
+					method: "POST",
+					body: json,
+				}).then(function(resp) {
+					console.log("create devices response:", resp);
+					for (let r of resp.result)
+						info("created device: " + JSON.stringify(r));
+				});
+			}));
+		}
+	</script>
+</body>
+</html>
