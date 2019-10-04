@@ -20,9 +20,8 @@ In short:
 
 This tool may help you to create many [devices](https://flespi.com/kb/device-virtual-instance-of-real-tracker) in your [flespi.io](https://flespi.io/) account.
 
-[run it in your browser](https://flespi-software.github.io/examples/devices-creation-tool/)
-
-[sources](devices-creation-tool/)
+* [run it in your browser](https://flespi-software.github.io/examples/devices-creation-tool/)
+* [sources](devices-creation-tool/)
 
 # Contributing
 
