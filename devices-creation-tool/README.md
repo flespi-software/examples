@@ -12,4 +12,4 @@ At the last stage, you may get a cURL command line to create devices (first butt
 
 See the screenshot of the process:
 
-![screenshot](./screen.png?raw=true "screenshot")
+![screenshot](./img/screen.png?raw=true "screenshot")
