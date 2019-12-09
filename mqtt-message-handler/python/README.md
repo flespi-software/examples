@@ -25,7 +25,7 @@ First of all you should **create a new table** in your database to handle messag
 *You can change columns as you wish. But then you should change the respective insert query in `on_message` function.*
 
 
-**Also you should configure listener by changing configuration lines:**
+**Also you should configure the listener by changing these configuration lines:**
 
     channel_id = '12345'
     flespi_mqtt_host = 'mqtt.flespi.io'
@@ -35,13 +35,10 @@ First of all you should **create a new table** in your database to handle messag
     mysql_passwd = 'password'
     mysql_db = 'message_receiver'
 
-**To start this example you need to install requirements:**
+**To start this example you need to install the following dependencies:**
 
     pip3 install asyncio gmqtt pymysql uvloop
 
-**Then start example:**
+**Then start the example:**
 
     python3 channel_message_listener.py
-
-
-
