@@ -6,7 +6,7 @@
   $mysql_table = 'php_message_listener';
 
   // First of all you should create a new table in your database to handle messages.
-  // You can change columns as you wish. But then you should change the respective insert query in "on_message" function.
+  // You can change columns as you wish. But then you should change the respective insert query
   //
   // CREATE TABLE message_receiver.php_message_listener (
   // 	ident varchar(100) NOT NULL,
