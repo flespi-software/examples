@@ -1,6 +1,6 @@
 # flespi.io usage examples
 
-## http stream receiver
+## HTTP stream receiver
 
 * [NodeJS](http-stream-receiver/nodejs)
 * [PHP](http-stream-receiver/php)
@@ -16,7 +16,10 @@ In short:
 4. configure your example to listen on `your-server:port` network endpoint and to handle a `/path-on-server` uri
 5. flespi platform will constantly deliver a batch of messages to your deployment
 
-## devices creation tool
+## MQTT channel message handler
+* [Python + MySQL](mqtt-message-handler/python)
+
+## Devices creation tool
 
 This tool may help you to create many [devices](https://flespi.com/kb/device-virtual-instance-of-real-tracker) in your [flespi.io](https://flespi.io/) account.
 
