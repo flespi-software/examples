@@ -3,7 +3,7 @@
 ## HTTP stream receiver
 
 * [NodeJS](http-stream-receiver/nodejs)
-* [PHP](http-stream-receiver/php)
+* [PHP](http-stream-receiver/php) or [PHP+MySQL](http-stream-receiver/php_mysql)
 * [Python](http-stream-receiver/python)
 
 More info about http streams: https://flespi.com/blog/get-data-in-your-platform-via-flespi-http-stream
