@@ -89,7 +89,7 @@ def on_disconnect(client, packet, exc=None):
     if con is not None:
         con.close()
 
-def on_subscribe(client, mid, qos):
+def on_subscribe(client, mid, qos, properties):
     print('SUBSCRIBED')
 
 def ask_exit(*args):
