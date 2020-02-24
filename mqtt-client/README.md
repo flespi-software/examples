@@ -19,11 +19,14 @@ disconnecting...
 disconnected
 ```
 
-## Requirements
+## Requirements: flespi token
 
 To connect to [flespi mqtt broker](https://flespi.com/mqtt-broker) you have to obtain a **flespi token**.
 
 Please [refer here](https://flespi.com/kb/tokens-access-keys-to-flespi-platform) to read how to do it (don't worry, it's fast and simple).
+
+To run these examples you need a **flespi token** allowing to publish and subscribe to "test" topic.
+That may be a **Standard** token, **Master** token (although using it in the example may be unwise) or the [**ACL** token](https://flespi.com/blog/take-control-of-token-access-permissions-with-flexible-acls).
 
 ## nodejs
 

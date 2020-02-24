@@ -11,7 +11,7 @@ console.log('mqtt client created, connecting...');
 client.on('connect', () => {
   console.log('connected, subscribing to "test" topic...');
 
-  client.subscribe('test', (err) => {
+  client.subscribe('test', {qos: 1}, (err) => {
     if (err) {
       console.log('failed to subscribe to topic "test":', err);
       return;
