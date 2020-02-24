@@ -66,5 +66,5 @@ And then run the example script with the **flespi token** passed through the pro
 . venv/bin/activate
 
 # run example
-FlespiToken=XXXXXXXXXXXXXXX python example.py
+FlespiToken=XXXXXXXXXXXXXXX python ./example.py
 ```
