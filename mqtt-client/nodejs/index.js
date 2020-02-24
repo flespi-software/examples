@@ -1,6 +1,6 @@
 const mqtt = require('mqtt');
 
-const client  = mqtt.connect('mqtts://mqtt.flespi.io:8883', {
+const client = mqtt.connect('mqtts://mqtt.flespi.io:8883', {
   // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
   username: `FlespiToken ${process.env.FlespiToken}`,
   protocolVersion: 5,
