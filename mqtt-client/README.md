@@ -41,5 +41,5 @@ npm install
 And then run the entry point script with the **flespi token** passed through the process environment:
 
 ```sh
-FlespiToken=XXXXXXXXXXXXXXX npm run main # just runs 'node ./index.js'
+FlespiToken=XXXXXXXXXXXXXXX npm run example # just runs 'node ./example.js'
 ```

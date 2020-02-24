@@ -1,6 +1,7 @@
 const mqtt = require('mqtt');
 
 const client = mqtt.connect('mqtts://mqtt.flespi.io:8883', {
+  clientId: 'flespi-examples-mqtt-client-nodejs',
   // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
   username: `FlespiToken ${process.env.FlespiToken}`,
   protocolVersion: 5,
@@ -33,4 +34,5 @@ client.on('close', () => {
 
 client.on('error', (err) => {
   console.log('mqtt client error:', err);
+  client.end(true) // force disconnect and stop the script
 });
