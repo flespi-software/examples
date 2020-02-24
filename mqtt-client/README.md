@@ -95,3 +95,11 @@ And then run the example script with the **flespi token** passed through the pro
 # run example
 FlespiToken=XXXXXXXXXXXXXXX lua ./example.lua
 ```
+
+## browser
+
+Example source code located in the [./browser/](./browser/)
+
+You may run the example in yoru browser from GitHub Pages or open the example.html file from your local file system.
+
+This example uses the [browser-version of the mqtt.js](https://github.com/mqttjs/MQTT.js#browser) library.

@@ -1,0 +1,87 @@
+<!DOCTYPE html> <!-- just open this file in the browser -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>MQTT client example</title>
+  <script src="https://unpkg.com/mqtt@3.0.0/dist/mqtt.min.js"></script>
+  <style>
+    #output:not(:empty) {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <h1>In-browser MQTT client example</h1>
+  <p>
+    To connect to the <a href="https://flespi.com/mqtt-broker">flespi MQTT broker</a>
+    you have to <a href="https://flespi.com/kb/tokens-access-keys-to-flespi-platform">obtain a <strong>flespi token</strong></a>
+  </p>
+  <p>
+    <label>
+      Insert here the <strong>flespi token</strong>:<br>
+      <input type="text" id="token" placeholder="64-char string" size="80">
+    </label>
+  </p>
+  <p>
+    Then <button onclick="example()">press to execute example code</button>
+  </p>
+  <p>
+    Output:
+    <pre id="output"></pre>
+  </p>
+
+  <script>
+    function example() {
+      var token = document.getElementById('token').value.trim();
+      if (token.length != 64) {
+        log('please check the token');
+        return;
+      }
+      var client = mqtt.connect('wss://mqtt.flespi.io', {
+        clientId: 'flespi-examples-mqtt-client-browser',
+        // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
+        username: 'FlespiToken ' + token,
+        protocolVersion: 5,
+        clean: true,
+      });
+      log('mqtt client created, connecting...');
+
+      client.on('connect', () => {
+        log('connected, subscribing to "test" topic...');
+
+        client.subscribe('test', {qos: 1}, (err) => {
+          if (err) {
+            log('failed to subscribe to topic "test":', err);
+            return;
+          }
+          log('subscribed to "test" topic, publishing message...');
+          client.publish('test', 'hello from flespi mqtt client example script!', {qos: 1});
+        });
+      });
+
+      client.on('message', (topic, msg) => {
+        log(`received message in topic "${topic}": "${msg.toString('utf8')}"`);
+        log('disconnecting...');
+        client.end();
+      });
+
+      client.on('close', () => {
+        log('disconnected');
+      })
+
+      client.on('error', (err) => {
+        log('mqtt client error:', err);
+        client.end(true) // force disconnect
+      });
+    }
+
+    function log() {
+      var args = Array.prototype.slice.call(arguments);
+      console.log.apply(console, args);
+      document.getElementById('output').innerText += args.join(' ') + '\n';
+    }
+  </script>
+</body>
+</html>
