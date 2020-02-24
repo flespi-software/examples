@@ -43,3 +43,28 @@ And then run the example script with the **flespi token** passed through the pro
 ```sh
 FlespiToken=XXXXXXXXXXXXXXX npm run example # just runs 'node ./example.js'
 ```
+
+## python
+
+Example source code located in the [./python/](./python/)
+
+To run the python example you need to install the dependencies (gmqtt package):
+
+```sh
+# optionally create the virtualenv
+virtualenv venv
+. venv/bin/activate
+
+# install requirements
+pip install -r requirements.txt
+```
+
+And then run the example script with the **flespi token** passed through the process environment:
+
+```sh
+# optionally use created virtualenv
+. venv/bin/activate
+
+# run example
+FlespiToken=XXXXXXXXXXXXXXX python example.py
+```
