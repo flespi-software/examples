@@ -27,7 +27,7 @@ Please [refer here](https://flespi.com/kb/tokens-access-keys-to-flespi-platform)
 
 ## nodejs
 
-Example [is here](./nodejs/)
+Example source code located in the [./nodejs/](./nodejs/)
 
 To run the node.js example you need to install the dependencies (mqtt package):
 
