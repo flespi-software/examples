@@ -1,11 +1,13 @@
 local mqtt = require("mqtt")
 
 local client = mqtt.client{
+	id = "flespi-examples-mqtt-client-lua",
 	uri = "mqtt.flespi.io",
 	-- see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
 	username = "FlespiToken "..(os.getenv("FlespiToken") or ""),
 	clean = true,
 	secure = true,
+	version = mqtt.v50,
 }
 print("mqtt client created, connecting...")
 
