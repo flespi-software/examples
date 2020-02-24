@@ -18,7 +18,7 @@ In short:
 
 ## MQTT client examples
 
-[Located here](mqtt-client/)
+[MQTT client source code examples](mqtt-client/) using the [flespi broker](https://flespi.com/mqtt-broker) on **nodejs**, **python**, etc...
 
 ## MQTT channel message handler
 
