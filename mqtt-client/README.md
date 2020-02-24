@@ -100,6 +100,6 @@ FlespiToken=XXXXXXXXXXXXXXX lua ./example.lua
 
 Example source code located in the [./browser/](./browser/)
 
-You may run the example in yoru browser from GitHub Pages or open the example.html file from your local file system.
+You may run the example [in your browser from GitHub Pages](https://flespi-software.github.io/examples/mqtt-client/browser/example.html) or open the example.html file from your local file system.
 
 This example uses the [browser-version of the mqtt.js](https://github.com/mqttjs/MQTT.js#browser) library.
