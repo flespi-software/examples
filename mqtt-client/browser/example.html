@@ -62,7 +62,7 @@
       });
 
       client.on('message', (topic, msg) => {
-        log(`received message in topic "${topic}": "${msg.toString('utf8')}"`);
+        log('received message in topic "' + topic + '": "' + msg.toString('utf8') + '"');
         log('disconnecting...');
         client.end();
       });
