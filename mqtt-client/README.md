@@ -32,7 +32,7 @@ That may be a **Standard** token, **Master** token (although using it in the exa
 
 Example source code located in the [./nodejs/](./nodejs/)
 
-To run the nodejs example you need to install the dependencies (mqtt package):
+To run the example you need to install the dependencies ([mqtt](https://github.com/mqttjs/MQTT.js) package):
 
 ```sh
 npm install
@@ -48,10 +48,10 @@ FlespiToken=XXXXXXXXXXXXXXX npm run example # just runs 'node ./example.js'
 
 Example source code located in the [./python/](./python/)
 
-To run the python example you need to install the dependencies (gmqtt package):
+To run the example you need to install the dependencies ([gmqtt](https://github.com/wialon/gmqtt) package):
 
 ```sh
-# optionally create the virtualenv
+# optionally create and activate the virtualenv
 virtualenv venv
 . venv/bin/activate
 

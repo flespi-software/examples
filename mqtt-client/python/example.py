@@ -37,6 +37,7 @@ async def main():
     client.on_disconnect = on_disconnect
     client.on_subscribe = on_subscribe
 
+    # see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
     client.set_auth_credentials('FlespiToken {}'.format(os.environ.get("FlespiToken")), None)
     print('mqtt client created, connecting...')
     await client.connect('mqtt.flespi.io', port=8883, ssl=True)
