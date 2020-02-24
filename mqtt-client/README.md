@@ -14,7 +14,7 @@ The expected stdout output will be like this:
 mqtt client created, connecting...
 connected, subscribing to "test" topic...
 subscribed to "test" topic, publishing message...
-received message in topic "test": "hello from flespi nodejs mqtt client example script!"
+received message in topic "test": "hello from flespi mqtt client example script!"
 disconnecting...
 disconnected
 ```
@@ -32,13 +32,13 @@ That may be a **Standard** token, **Master** token (although using it in the exa
 
 Example source code located in the [./nodejs/](./nodejs/)
 
-To run the node.js example you need to install the dependencies (mqtt package):
+To run the nodejs example you need to install the dependencies (mqtt package):
 
 ```sh
 npm install
 ```
 
-And then run the entry point script with the **flespi token** passed through the process environment:
+And then run the example script with the **flespi token** passed through the process environment:
 
 ```sh
 FlespiToken=XXXXXXXXXXXXXXX npm run example # just runs 'node ./example.js'

@@ -18,7 +18,7 @@ client.on('connect', () => {
       return;
     }
     console.log('subscribed to "test" topic, publishing message...');
-    client.publish('test', 'hello from flespi nodejs mqtt client example script!', {qos: 1});
+    client.publish('test', 'hello from flespi mqtt client example script!', {qos: 1});
   });
 });
 
