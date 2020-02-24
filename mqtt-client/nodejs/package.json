@@ -1,0 +1,21 @@
+{
+  "name": "mqtt-client-example-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "main": "node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flespi-software/examples.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flespi-software/examples/issues"
+  },
+  "homepage": "https://github.com/flespi-software/examples#readme",
+  "dependencies": {
+    "mqtt": "^3.0.0"
+  }
+}
