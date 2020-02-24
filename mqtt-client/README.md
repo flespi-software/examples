@@ -41,7 +41,7 @@ npm install
 And then run the example script with the **flespi token** passed through the process environment:
 
 ```sh
-FlespiToken=XXXXXXXXXXXXXXX npm run example # just runs 'node ./example.js'
+FlespiToken=XXXXXXXXXXXXXXX node ./example.js
 ```
 
 ## python
