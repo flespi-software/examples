@@ -16,10 +16,16 @@ In short:
 4. configure your example to listen on `your-server:port` network endpoint and to handle a `/path-on-server` uri
 5. flespi platform will constantly deliver a batch of messages to your deployment
 
+## MQTT client examples
+
+[Located here](mqtt-client/)
+
 ## MQTT channel message handler
+
 * [Python + MySQL](mqtt-message-handler/python)
 
 ## Snapshots downloader tool
+
 * [Python](snapshots-downloader)
 
 ## Devices creation tool
