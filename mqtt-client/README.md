@@ -68,3 +68,30 @@ And then run the example script with the **flespi token** passed through the pro
 # run example
 FlespiToken=XXXXXXXXXXXXXXX python ./example.py
 ```
+
+## lua
+
+Example source code located in the [./lua/](./lua/)
+
+To run the example you need to install the dependencies ([luamqtt](https://github.com/xHasKx/luamqtt) package):
+
+```sh
+# optionally create local environment using hererocks (https://github.com/mpeterv/hererocks):
+hererocks venv -l5.3 -rlatest
+. venv/bin/activate
+
+# install requirements
+luarocks install luasocket
+luarocks install luasec
+luarocks install luamqtt
+```
+
+And then run the example script with the **flespi token** passed through the process environment:
+
+```sh
+# optionally use created local environment
+. venv/bin/activate
+
+# run example
+FlespiToken=XXXXXXXXXXXXXXX lua ./example.lua
+```
