@@ -69,6 +69,51 @@ And then run the example script with the **flespi token** passed through the pro
 FlespiToken=XXXXXXXXXXXXXXX python ./example.py
 ```
 
+## micropython (esp8266)
+
+Example source code located in the [./micropython/](./micropython/)
+
+In our case we use NodeMCU(esp8266) board with preinstalled light sensor and sends sensor value to topic "myesp/light".
+
+To run the example you need to flash [micropython firmware](https://micropython.org/download#esp8266)
+
+Manual: https://docs.micropython.org/en/latest/esp8266/tutorial/intro.html
+
+To flash you should install esptool:
+
+```sh
+pip install esptool
+```
+
+Now you can flash firmware
+```sh
+# clear flash
+esptool.py --port /dev/ttyUSB0 erase_flash
+# deploy downloaded firmware
+esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect 0 esp8266-20191220-v1.12.bin
+```
+
+If everything is ok - please edit boot.py file and provide valid data:
+```python
+# Your flespi token
+token = "YourFlespiTokenHere"
+topic = "myesp/light"
+
+# Wi-Fi settings
+wifissid = "test"
+wifipassword = "12345678"
+```
+
+Now you can load example to your board:
+
+```sh
+ampy --port /dev/ttyUSB0 put boot.py
+ampy --port /dev/ttyUSB0 put mqtt.py
+ampy --port /dev/ttyUSB0 put wifi.py
+```
+
+Now just unplug then plug power cable to your board. And check result for example in your favorite ui MQTT client (we love to use [MQTT-Board](https://mqttboard.flespi.io))
+
 ## lua
 
 Example source code located in the [./lua/](./lua/)
