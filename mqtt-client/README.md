@@ -73,6 +73,8 @@ FlespiToken=XXXXXXXXXXXXXXX python ./example.py
 
 Example source code located in the [./micropython/](./micropython/)
 
+![esp8266 micropython mqtt](./micropython/esp.jpg?raw=true "esp8266 with micropython")
+
 In our case we use NodeMCU(esp8266) board with preinstalled light sensor and sends sensor value to topic "myesp/light".
 
 To run the example you need to flash [micropython firmware](https://micropython.org/download#esp8266)
