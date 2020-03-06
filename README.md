@@ -1,5 +1,7 @@
 # flespi.io usage examples
 
+[Changelog on forum](https://forum.flespi.com/d/156-changelog-code-examples-github)
+
 ## HTTP stream receiver
 
 * [NodeJS](http-stream-receiver/nodejs)
@@ -37,4 +39,4 @@ This tool may help you to create many [devices](https://flespi.com/kb/device-vir
 
 # Contributing
 
-If you have cool examples of flespi API usage or have time and zeal to write examples on your preferred language, you are welcome to contribute by making a pull request.
+If you have cool examples of flespi API usage or have time and zeal to write examples on your preferred language, you are welcome to contribute by making a pull request or [contact us on the forum](https://forum.flespi.com/d/156-changelog-code-examples-github).
