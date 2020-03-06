@@ -1,3 +1,3 @@
 # python MQTT Client example
 
-Please [refer here](../#readme) for complete README
+Please [refer here](../#python-windows) for complete README
