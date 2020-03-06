@@ -69,6 +69,33 @@ And then run the example script with the **flespi token** passed through the pro
 FlespiToken=XXXXXXXXXXXXXXX python ./example.py
 ```
 
+## python-windows
+
+Example source code is located at [./python-windows/](./python-windows/).
+The only difference in the windows version is missing the uvloop module and not handling signals (windows does not have them).
+
+To run the example you need to install the dependencies ([gmqtt](https://github.com/wialon/gmqtt) package):
+
+```cmd
+rem   optionally create and activate the virtualenv
+python -m venv venv
+venv\Scripts\activate.bat
+
+rem   install requirements
+pip install -r requirements.txt
+```
+
+And then run the example script with the **flespi token** passed through the process environment:
+
+```cmd
+rem   optionally use created virtualenv
+venv\Scripts\activate.bat
+
+rem   run example
+set FlespiToken=XXXXXXXXXXXXXXX
+python example.py
+```
+
 ## micropython (esp8266)
 
 Example source code is located at [./micropython/](./micropython/)
