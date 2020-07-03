@@ -22,6 +22,14 @@ In short:
 
 [MQTT client source code examples](mqtt-client/) using the [flespi broker](https://flespi.com/mqtt-broker) on [**nodejs**](./mqtt-client/nodejs), [**python**](./mqtt-client/python), [**python on windows**](./mqtt-client/python-windows), [**lua**](./mqtt-client/lua), [**browser**](./mqtt-client/browser), [**micropython (esp8266)**](./mqtt-client/micropython), etc...
 
+## MQTT device telemetry dashboard example
+
+A simple example of using mqtt to receive and display telemetry data from devices.
+
+[run it in your browser](https://flespi-software.github.io/examples/mqtt-telemetry-dashboard/)
+
+* [HTML+JS+CSS](mqtt-telemetry-dashboard) with [mqtt.js](https://github.com/mqttjs/MQTT.js)
+
 ## MQTT channel message handler
 
 * [Python + MySQL](mqtt-message-handler/python)

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT device telemetry example</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script>
+        var devicesList = {};
+        var telemetry = {};
+        var mapready = false;
+        var login = null;
+        var client;
+        function debounce(func, wait) {
+            var timeout;
+            return function() {
+                var that = this, args = arguments;
+                var callAfter = function() {
+                    timeout = null;
+                    func.apply(that, args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(callAfter, wait);
+            };
+        }
+        // draw table
+        function obj2table(obj) {
+            var html = '<table><tr><th>Key</th><th>Value</th></tr>';
+            var objkeys = Object.keys(obj).sort()
+            for (var key of objkeys) {
+                var item = obj[key];
+                var value = (typeof(item) === 'object') ? obj2table(item) : item.toString();
+                html += '<tr><td>' + key + '</td><td>' + value + '</tr>';
+            }
+            html += '</table>';
+            return html;
+        }
+
+        // debounced telemetry redraw function
+        var telemetrydebounce = debounce(function () {
+            // fill telemetry table
+            document.getElementById('telemetryblock').innerHTML = obj2table(telemetry);
+            // show position on map
+            if (mapready && telemetry['position.latitude'] && telemetry['position.longitude']) {
+                document.getElementById('map').contentWindow.postMessage('MapView|cmd:{"clear": ["markers"], "appendpoints": [[' + telemetry['position.latitude'] + ',' + telemetry['position.longitude'] + ']],"addmarkers": [[' + telemetry['position.latitude'] + ',' + telemetry['position.longitude'] + ']]}', '*')
+            }
+        }, 200);
+        // mqtt processing function
+        function main () {
+            if (client && client.end) { client.end()}
+            client = mqtt.connect('wss://' + login.region['mqtt-ws'], {
+                username: login.token,
+                clientId: 'MQTTdevicetelemetryexample' + Math.random().toString(16).substr(2, 8),
+                protocolVersion: 5,
+                clean: true,
+                wsOptions: {
+                    objectMode: false,
+                    perMessageDeflate: true
+                },
+                resubscribe: false,
+                keepalive: 240
+            });
+            client.on('error', function (err) {
+                console.log(err);
+                client.end();
+            });
+            // on connect - clear lists and subscribe
+            client.on('connect', function () {
+                devicesList = {};
+                telemetry = {};
+                console.log('client connected');
+
+                // subscribe to device list
+                client.subscribe('flespi/state/gw/devices/+', { qos: 0 });
+                // message processing
+                client.on('message', function (topic, message, packet) {
+                    console.log('message:= ' + message.toString() + '\ntopic:= ' + topic);
+                    topic = topic.split('/');
+                    if (topic[3] === 'devices' && topic.length === 7) {
+                        // fill telemetry object
+                        telemetry[topic[topic.length - 1]] = JSON.parse(message);
+                        telemetrydebounce();
+                    } else if (topic[3] === 'devices' && topic.length === 5) {
+                        // fill device list object
+                        id = parseInt(topic[topic.length - 1]);
+                        if (message) {
+                            message = JSON.parse(message);
+                            devicesList[message.id] = {value: message.id, label: (message.name || '')  + ' #' +  message.id};
+                        } else {
+                            delete devicesList[id];
+                        }
+                        var list = '<option value="0">Select device</option>';
+                        for (var id in devicesList) {
+                            list += '<option value="' + devicesList[id].value + '">' + devicesList[id].label + '</option>';
+                        }
+                        document.getElementById('deviceselector').innerHTML = list;
+                    } else {
+                        console.log ('not proccessed message');
+                    }
+                });
+            })
+        }
+
+        var selectedid = 0;
+        function selectdevice () {
+            // clear map
+            document.getElementById('map').contentWindow.postMessage('MapView|cmd:{"clear":"all"}', '*');
+            // unsubscribe old telemetry topic
+            client.unsubscribe('flespi/state/gw/devices/' + selectedid + '/telemetry/+');
+            selectedid = document.getElementById('deviceselector').value;
+            // subscribe new telemetry topic
+            client.subscribe('flespi/state/gw/devices/' + selectedid + '/telemetry/+', { qos: 0 });
+            //clear telemetry and draw
+            telemetry = {};
+            telemetrydebounce();
+        }
+
+        // listen browser postmessage
+        window.addEventListener('message', function (event) {
+            // listen login event
+            if (typeof event.data === 'string' && ~event.data.indexOf('FlespiLogin')) {
+                console.log(JSON.parse(event.data.replace('FlespiLogin|token:', '')))
+                document.getElementById("login").style="display:none;"
+                document.getElementById("deviceselector").style="display:block;"
+                login = JSON.parse(event.data.replace('FlespiLogin|token:', ''))
+                main();
+            }
+            // listen map ready state
+            if (typeof event.data === 'string' && event.data.indexOf('MapView|state') === 0) {
+                var data = JSON.parse(event.data.replace('MapView|state:', ''))
+                if (data.ready) {
+                    // set mapready flag and send map configuration
+                    mapready = true
+                    document.getElementById('map').contentWindow.postMessage('MapView|cmd:{"zoomcontrol":true, "fullscreencontrol": true}', '*')
+                }
+            }
+        })
+    </script>
+    <style>
+        body, html{
+            margin:0;
+            padding:0;
+            border:0;
+            overflow: hidden;
+            font-family: Geneva, Arial, Helvetica, sans-serif;
+            height: 100%;
+        }
+        .header {
+            position: absolute;
+            top:0;
+            left:0;
+            right:0;
+            height: 50px;
+            background:#333;
+            color: fff;
+        }
+        #login {
+            height:50px;
+            border:0;
+            width:100%;
+        }
+        #deviceselector {
+            display: none;
+            width:100%;
+            height: 100%;
+            margin:0;
+            border: 0;
+            background: #333;
+            color: #fff;
+            font-size: 20px
+        }
+        #deviceselector option{
+            height:30px;
+        }
+        #telemetryblock {
+            margin:0;
+            width: 30%;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            bottom: 0;
+            border:0;
+            box-sizing: border-box;
+            overflow: auto;
+            background: #555;
+            color: #fff;
+        }
+        #telemetryblock table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #telemetryblock th, #telemetryblock td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        #telemetryblock tr:nth-child(even) {
+            background-color: rgba(0,0,0,.1);
+        }
+        #mapblock {
+            margin:0;
+            width: 70%;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            bottom: 0;
+            border:0;
+            box-sizing: border-box;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: rgba(255,255,255,.3);
+        }
+        ::-webkit-scrollbar-track:hover {
+            background-color: rgba(255,255,255,.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0,0,0, .5);
+        }
+        ::-webkit-scrollbar-corner {
+            background-color: rgba(255,255,255,.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <select id="deviceselector" onchange="selectdevice()" value="0"></select>
+        <iframe id="login" src="https://flespi.io/frame/index.html#333;ccc"></iframe>
+    </div>
+    <div id="telemetryblock"></div>
+    <div id="mapblock">
+        <iframe id="map" src="https://flespi.io/mapview/index.html" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+    </div>
+</body>
+</html>
