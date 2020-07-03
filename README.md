@@ -26,7 +26,7 @@ In short:
 
 A simple example of using mqtt to receive and display telemetry data from devices.
 
-[run it in your browser](https://flespi-software.github.io/examples/mqtt-telemetry-dashboard/)
+[run it in your browser](https://flespi-software.github.io/examples/mqtt-telemetry-dashboard/index.html)
 
 * [HTML+JS+CSS](mqtt-telemetry-dashboard) with [mqtt.js](https://github.com/mqttjs/MQTT.js)
 
