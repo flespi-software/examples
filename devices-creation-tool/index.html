@@ -35,7 +35,7 @@
 		You have to provide a <a target="_blank" href="https://flespi.com/kb/tokens-access-keys-to-flespi-platform">flespi token</a> to perform all operations.
 	</p>
 	<p>
-		This wizard-like tool can create a lot of devices at once with the specified <a target="_blank" href="https://flespi.io/docs/#/gw/!/protocols/get_protocols_protocol_selector_device_types_devtypes_selector">device type</a>.
+		This wizard-like tool can create a lot of devices at once with the specified <a target="_blank" href="https://flespi.io/docs/#/gw/protocols/get_channel_protocols_protocol_selector_device_types_devtypes_selector">device type</a>.
 	</p>
 	<p>
 		You have to provide a set of <strong>ident</strong> values and the same number of <strong>name</strong> values.
@@ -128,7 +128,7 @@
 
 		function FetchDeviceTypes() {
 			info("fetching device types with this token...");
-			platform_fetch("/gw/protocols/all/device-types/all?fields=id,protocol_id,protocol_name,title,configuration").then(function(data) {
+			platform_fetch("/gw/channel-protocols/all/device-types/all?fields=id,protocol_id,protocol_name,title,configuration").then(function(data) {
 				console.log("device types", data);
 				info("fetched " + data.result.length + " device types, please select one");
 				SelectDeviceType(data.result);
