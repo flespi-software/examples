@@ -29,13 +29,22 @@
 	<a href="https://github.com/flespi-software/examples/tree/master/devices-creation-tool" target="_blank">
 		<img src="img/right-graphite@2x.f2e09a97.png" alt="Fork me on GitHub" style="position: absolute; top: 0px; right: 0px; border: 0px; width: 149px; height: 149px;">
 	</a>
-	<h1><a target="_blank" href="https://flespi.io">flespi.io</a> <a target="_blank" href="https://flespi.com/kb/device-virtual-instance-of-real-tracker">devices</a> bulk creation tool</h1>
+	<p id="region-selector">
+		Region:
+		<label><input type="radio" name="region" value="eu" checked> eu</label>
+		<label><input type="radio" name="region" value="ru"> ru</label>
+	</p>
+
+	<h1>
+		<a target="_blank" class="flespi-io-url" href="https://flespi.io">flespi.io</a>
+		<a target="_blank" href="https://flespi.com/kb/device-virtual-instance-of-real-tracker">devices</a> bulk creation tool
+	</h1>
 	<p>
-		This tool may help you to create many <a target="_blank" href="https://flespi.com/kb/device-virtual-instance-of-real-tracker">devices</a> in your <a target="_blank" href="https://flespi.io">flespi.io</a> account.
+		This tool may help you to create many <a target="_blank" href="https://flespi.com/kb/device-virtual-instance-of-real-tracker">devices</a> in your <a target="_blank" class="flespi-io-url" href="https://flespi.io">flespi.io</a> account.
 		You have to provide a <a target="_blank" href="https://flespi.com/kb/tokens-access-keys-to-flespi-platform">flespi token</a> to perform all operations.
 	</p>
 	<p>
-		This wizard-like tool can create a lot of devices at once with the specified <a target="_blank" href="https://flespi.io/docs/#/gw/protocols/get_channel_protocols_protocol_selector_device_types_devtypes_selector">device type</a>.
+		This wizard-like tool can create a lot of devices at once with the specified <a target="_blank" class="flespi-io-url" href="https://flespi.io/docs/#/gw/protocols/get_channel_protocols_protocol_selector_device_types_devtypes_selector">device type</a>.
 	</p>
 	<p>
 		You have to provide a set of <strong>ident</strong> values and the same number of <strong>name</strong> values.
@@ -58,7 +67,16 @@
 	<script type="text/javascript">
 		"use strict";
 
-		let platform = "https://flespi.io";
+		let region = "eu";
+
+		function platform_domain() {
+			return region === "eu" ? "flespi.io" : "ru.flespi.io";
+		}
+
+		function platform_url() {
+			return "https://" + platform_domain();
+		}
+
 		let token;
 		let wizzard = $("#wizzard");
 		let device_type_id;
@@ -82,7 +100,7 @@
 		function platform_fetch() {
 			let args = Array.from(arguments);
 
-			args[0] = platform + args[0];
+			args[0] = platform_url() + args[0];
 			if (args[1]) {
 				args[1].headers = args[1].headers || {};
 				args[1].headers["Authorization"] = "FlespiToken " + token;
@@ -115,7 +133,23 @@
 				} else
 					error("invalid token value format: expecting 64 symbols");
 			});
+			$("input[name=region]").change(function(value) {
+				region = this.value;
+				PatchUrls();
+			});
+			PatchUrls();
 		});
+
+		function PatchUrls() {
+			$(".flespi-io-url").each(function() {
+				let href = /https:\/\/([^\/]+)(.+)/.exec(this.href);
+				let current_domain = href[1];
+				let path = href[2];
+				// now patch
+				this.href = platform_url() + path;
+				this.innerText = this.innerText.replace(current_domain, platform_domain());
+			});
+		}
 
 		function ScrollDown() {
 			setTimeout(function() { window.scrollTo(0,document.body.scrollHeight); }, 100);
@@ -123,6 +157,7 @@
 
 		function NextStep() {
 			$("input,button,select,textarea", wizzard).attr("disabled", true);
+			$("input", "#region-selector").attr("disabled", true);
 			ScrollDown();
 		}
 
@@ -356,7 +391,7 @@
 					return error("invalid json with devices data");
 				json = JSON.stringify(JSON.parse(json));
 
-				let curl = "curl -X POST --header 'Authorization: FlespiToken " + token + "' -d '" + json + "' '" + platform  + "/gw/devices'";
+				let curl = "curl -X POST --header 'Authorization: FlespiToken " + token + "' -d '" + json + "' '" + platform_url()  + "/gw/devices'";
 				wizzard.append("<pre>" + curl + "</pre>");
 				ScrollDown();
 			}));
