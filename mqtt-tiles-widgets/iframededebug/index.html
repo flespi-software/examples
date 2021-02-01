@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" class="full nomp">
+<head>
+    <meta charset="utf-8">
+    <title>iirame debug</title>
+    <style>
+        .nomp {
+            margin: 0;
+            padding: 0;
+        }
+        .full {
+            width:100%;
+            height:100%;
+            box-sizing: border-box;
+        }
+    </style>
+    <script>
+        function send() {
+            if (window.opener) {
+                window.opener.postMessage(document.getElementById('command').value, '*')
+            }
+            if (window.parent) {
+                window.parent.postMessage(document.getElementById('command').value, '*')
+            }
+            document.getElementById('result').value += "\n>>> | " + document.getElementById('command').value
+        }
+    </script>
+</head>
+
+<body class="full nomp">
+    <input type="text" id="command" class="nomp" />
+    <button onclick="send()" class="nomp">Send</button>
+    <br />
+    <textarea class="full nomp"  style="height: calc(100% - 50px)" id="result"></textarea>
+    <script>
+        document.getElementById('result').value = window.name || ''
+        window.addEventListener('message', function (event) {
+            if (typeof event.data === 'string') {
+                document.getElementById('result').value = "<<< | " + event.data + "\n" + document.getElementById('result').value
+            }
+        })
+
+    </script>
+</body>
+</html>
