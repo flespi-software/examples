@@ -23,6 +23,9 @@
 		pre {
 			white-space: pre-wrap;
 		}
+		#footer {
+			height: 50px;
+		}
 	</style>
 </head>
 <body>
@@ -63,6 +66,7 @@
 			<button id="set-token">Set token</button>
 		</p>
 	</div>
+	<div id="footer">&nbsp;</div>
 
 	<script type="text/javascript">
 		"use strict";
@@ -86,6 +90,7 @@
 		let names;
 		let phones;
 		let messages_ttl;
+		let messages_rotate;
 
 		function error(msg) {
 			wizzard.append($('<p class="error"></p>').text(msg))
@@ -351,6 +356,31 @@
 				info("messages_ttl: " + messages_ttl);
 				console.log("messages_ttl", messages_ttl);
 				NextStep();
+				InputMessagesRotate();
+			}));
+		}
+
+		function InputMessagesRotate() {
+			info("please input OPTIONAL messages_rotate parameter (in kilobytes) for your devices:");
+			info("note: you can skip that step leaving parameter unspecified");
+			let input = $('<input type="text" value="" placeholder="OPTIONAL messages_rotate in kilobytes">');
+			wizzard.append(input);
+			wizzard.append(" ");
+			wizzard.append($('<button>Set messages_rotate</button>').click(function() {
+				messages_rotate = parseInt(input.val().trim());
+				if (!isFinite(messages_rotate) || messages_rotate < 0 || messages_rotate > 0xFFFFFFFF)
+					return error("invalid messages_rotate, it should be a non-negative integer <= 0xFFFFFFFF");
+
+				info("messages_rotate: " + messages_rotate);
+				console.log("messages_rotate", messages_rotate);
+				NextStep();
+				CreateJSON();
+			}));
+			wizzard.append(" ");
+			wizzard.append($('<button>OR skip that step (no messages_rotate)</button>').click(function() {
+				info("without messages_rotate");
+				console.log("no messages_rotate");
+				NextStep();
 				CreateJSON();
 			}));
 		}
@@ -363,6 +393,7 @@
 				let dev = {
 					device_type_id: device_type_id,
 					messages_ttl: messages_ttl,
+					messages_rotate: messages_rotate,
 					name: names[i],
 				};
 				if (idents[i] || phones[i]) {
