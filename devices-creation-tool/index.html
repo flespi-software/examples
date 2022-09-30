@@ -179,30 +179,49 @@
 		}
 
 		function SelectDeviceType(devtypes) {
-			let sel = $('<select id="device-type"></select>');
+			const sel = $('<select id="device-type"></select>');
 			devtypes.sort(function(t1, t2) {
 				if (t1.protocol_id != t2.protocol_id)
 					return t1.protocol_id - t2.protocol_id;
 				return t1.title < t2.title ? 1 : 0;
 			});
-			let dt_by_id = {};
+			const dt_by_id = {};
+			const dt_options = [];
 			for (let i = 0; i < devtypes.length; i++) {
-				let dt = devtypes[i];
-				let opt = $(
+				const dt = devtypes[i];
+				const opt = $(
 					'<option value="' + dt.id + '">' +
 					dt.title + " (id=" + dt.id + ", protocol_name=" + dt.protocol_name + " protocol_id=" + dt.protocol_id + ")" +
 					'</option>'
 				);
+				dt_options.push([dt.title.toLowerCase(), opt]);
 				sel.append(opt);
 				dt_by_id[dt.id] = dt;
 			}
+			let select_btn;
+			const filter = $('<input type="text" id="device-type-filter">');
+			filter.on("input propertychange", function(ev) {
+				const filter_val = filter.val().toLowerCase();
+				sel.empty();
+				const match = dt_options.filter((pair) => pair[0].indexOf(filter_val) >= 0);
+				match.forEach((pair) => {
+					sel.append(pair[1]);
+				});
+				select_btn.prop('disabled', match.length === 0);
+			});
+			const flabel = $('<label>Filter device types: </label>');
+			const filter_row = $('<div></div>');
+			flabel.append(filter);
+			filter_row.append(flabel);
+			wizzard.append(filter_row)
 			wizzard.append(sel);
 			wizzard.append(" ");
-			wizzard.append($('<button>Select</button>').click(function() {
+			select_btn = $('<button>Select</button>');
+			wizzard.append(select_btn.click(function() {
 				device_type_id = +sel.val();
 				info("selected device type id: " + device_type_id);
 				console.log("selected device type", device_type_id);
-				let dt = dt_by_id[device_type_id];
+				const dt = dt_by_id[device_type_id];
 				if (dt.configuration.properties.ident.pattern)
 					ident_regexp = new RegExp(dt.configuration.properties.ident.pattern);
 				if (dt.configuration.properties.phone) {
