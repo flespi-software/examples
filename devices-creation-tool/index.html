@@ -93,6 +93,7 @@
 		let idents;
 		let names;
 		let phones;
+		let sms_passwords;
 		let messages_ttl;
 		let messages_rotate;
 		let settings_polling;
@@ -357,6 +358,54 @@
 				info("phones found: " + phones.length);
 				console.log("phones", phones);
 				NextStep();
+				const spwd = selected_device_type.configuration.properties.sms_password;
+				if (spwd && spwd.type == "string")
+					InputSmsPassword();
+				else {
+					sms_passwords = [];
+					InputMessageTTL();
+				}
+			}));
+		}
+
+		function InputSmsPassword() {
+			const spwd = selected_device_type.configuration.properties.sms_password;
+			info("please input sms_password for all devices you want to create, one value per line");
+			let required = (selected_device_type.configuration.required.indexOf("sms_password") != -1);
+			if (!required)
+				info("note: this is optional step, you can skip it, and default value will be used if presented");
+			if (spwd.default)
+				info("note: default value: " + spwd.default);
+			info("note: empty lines allowed indicating the missing sms_password configuration property for device on its line");
+			let spwd_re;
+			if (spwd.pattern)
+				spwd_re = new RegExp(spwd.pattern);
+			let ta = $('<textarea rows=10 cols=50>');
+			wizzard.append(ta);
+			wizzard.append("<br>");
+			wizzard.append($('<button>Set sms_passwords</button>').click(function() {
+				// fetch sms_passwords
+				sms_passwords = ta.val().trimRight();
+				if (sms_passwords) {
+					sms_passwords = sms_passwords.split("\n");
+					sms_passwords = sms_passwords.map(phone => phone.trim());
+					// validate them a bit
+					for (const sms_password of sms_passwords) {
+						if (!required && sms_password.length == 0)
+							continue;
+						if (spwd.minLength && sms_password.length < spwd.minLength)
+							return error("minLength " + spwd.minLength + " check failed for '" + sms_password + "'");
+						if (spwd.maxLength && sms_password.length > spwd.maxLength)
+							return error("maxLength " + spwd.maxLength + " check failed for '" + sms_password + "'");
+						if (spwd_re && !spwd_re.test(sms_password))
+							return error("invalid sms_password format: (expecting " + spwd_re + "): " + sms_password);
+					}
+				}
+				info("sms_passwords found: " + sms_passwords.length);
+				console.log("sms_passwords", sms_passwords);
+				if (sms_passwords.length == 0 && required)
+					return error("empty sms_passwords are not allowed for the device type");
+				NextStep();
 				InputMessageTTL();
 			}));
 		}
@@ -447,13 +496,15 @@
 					messages_rotate: messages_rotate,
 					name: names[i],
 				};
-				if (idents[i] || phones[i] || settings_polling) {
+				if (idents[i] || phones[i] || sms_passwords[i] || settings_polling) {
 					dev.configuration = {}
 				}
 				if (idents[i])
 					dev.configuration.ident = idents[i];
 				if (phones[i])
 					dev.configuration.phone = phones[i];
+				if (sms_passwords[i])
+					dev.configuration.sms_password = sms_passwords[i];
 				if (settings_polling)
 					dev.configuration.settings_polling = settings_polling;
 				data.push(dev);
