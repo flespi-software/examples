@@ -249,7 +249,7 @@
 			wizzard.append("<br>");
 			wizzard.append($('<button>Set idents</button>').click(function() {
 				// fetch idents
-				idents = ta.val().trim();
+				idents = ta.val().trimRight();
 				if (!idents)
 					return error("no idents found");
 				idents = idents.split("\n");
@@ -295,13 +295,10 @@
 			wizzard.append("<br>");
 			wizzard.append($('<button>Set names</button>').click(function() {
 				// fetch names
-				names = ta.val().trim();
+				names = ta.val().trimRight();
 				if (!names)
 					return error("no names found");
 				names = names.split("\n");
-				// check count
-				if (names.length != idents.length)
-					return error("please use the same number of names as idents on the previous step");
 				// trim names
 				names = names.map(name => name.trim());
 				if (names.some(name => !name))
@@ -328,12 +325,9 @@
 			wizzard.append("<br>");
 			wizzard.append($('<button>Set phones</button>').click(function() {
 				// fetch phones
-				phones = ta.val().trim();
+				phones = ta.val().trimRight();
 				if (phones) {
 					phones = phones.split("\n");
-					// check count
-					if (phones.length != idents.length)
-						return error("please use the same number of phones as idents on the previous step");
 					// trim phones
 					phones = phones.map(phone => phone.trim());
 				}
@@ -450,7 +444,7 @@
 
 			console.log("settings_polling", settings_polling);
 
-			for (let i = 0; i < idents.length; i++) {
+			for (let i = 0; i < names.length; i++) {
 				let dev = {
 					device_type_id: device_type_id,
 					messages_ttl: messages_ttl,
