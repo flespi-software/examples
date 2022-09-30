@@ -178,6 +178,8 @@
 			});
 		}
 
+		let selected_device_type;
+
 		function SelectDeviceType(devtypes) {
 			const sel = $('<select id="device-type"></select>');
 			devtypes.sort(function(t1, t2) {
@@ -220,8 +222,9 @@
 			wizzard.append(select_btn.click(function() {
 				device_type_id = +sel.val();
 				info("selected device type id: " + device_type_id);
-				console.log("selected device type", device_type_id);
 				const dt = dt_by_id[device_type_id];
+				console.log("selected device type", device_type_id, dt);
+				selected_device_type = dt;
 				if (dt.configuration.properties.ident.pattern)
 					ident_regexp = new RegExp(dt.configuration.properties.ident.pattern);
 				if (dt.configuration.properties.phone) {
@@ -403,6 +406,40 @@
 				info("without messages_rotate");
 				console.log("no messages_rotate");
 				NextStep();
+				const sp = selected_device_type.configuration.properties.settings_polling;
+				if (sp && sp.type == "string" && sp.enum)
+					InputSettingsPollingPolicy();
+				else {
+					info("note: settings polling policy is not available for the selected device type");
+					CreateJSON();
+				}
+			}));
+		}
+
+		let settings_polling;
+
+		function InputSettingsPollingPolicy() {
+			info("you can set the settings polling policy (default is " + selected_device_type.configuration.properties.settings_polling.default + "):");
+			info("note: you can skip that step, default value will be selected automatically on the flespi platform");
+			const sp = selected_device_type.configuration.properties.settings_polling;
+			let select = $('<select id="settings-polling"></select>');
+			console.log("sp", sp);
+			for (const variant of sp.enum) {
+				const opt = $(`<option ${variant === sp.default ? "selected" : ""}>` + variant + "</option>");
+				select.append(opt);
+			}
+			wizzard.append(select);
+			wizzard.append(" ");
+			wizzard.append($('<button>Set settings polling</button>').click(function() {
+				settings_polling = select.val();
+				info("settings_polling: " + settings_polling);
+				NextStep();
+				CreateJSON();
+			}));
+			wizzard.append(" ");
+			wizzard.append($('<button>OR skip that step (unspecified/default settings polling)</button>').click(function() {
+				info("without settings_polling (default)");
+				NextStep();
 				CreateJSON();
 			}));
 		}
@@ -411,6 +448,8 @@
 			info("here is a JSON for the devices creation, please inspect/edit it:");
 			let data = [];
 
+			console.log("settings_polling", settings_polling);
+
 			for (let i = 0; i < idents.length; i++) {
 				let dev = {
 					device_type_id: device_type_id,
@@ -418,13 +457,15 @@
 					messages_rotate: messages_rotate,
 					name: names[i],
 				};
-				if (idents[i] || phones[i]) {
+				if (idents[i] || phones[i] || settings_polling) {
 					dev.configuration = {}
 				}
 				if (idents[i])
 					dev.configuration.ident = idents[i];
 				if (phones[i])
 					dev.configuration.phone = phones[i];
+				if (settings_polling)
+					dev.configuration.settings_polling = settings_polling;
 				data.push(dev);
 			}
 
