@@ -99,13 +99,37 @@
 		let settings_polling;
 
 		function error(msg) {
-			wizzard.append($('<p class="error"></p>').text(msg))
+			wizzard.append($('<p class="error"></p>').text(msg));
+			ScrollDown();
+		}
+
+		function errorElement(el) {
+			wizzard.append($('<p class="error"></p>').append(el))
 			ScrollDown();
 		}
 
 		function info(msg) {
-			wizzard.append($('<p class="info"></p>').text(msg))
+			wizzard.append($('<p class="info"></p>').text(msg));
 			ScrollDown();
+		}
+
+		function escapeHtmlEntities(str) {
+			return str.replace(/[\u00A0-\u9999<>\&]/gim, function (i) {
+				return '&#' + i.charCodeAt(0) + ';';
+			});
+		}
+
+		window.onerror = function myErrorHandler(errorMsg, url, lineNumber, column, err) {
+			errorElement($("<span>" +
+				"Unexpected error, please copy the message below to the flespi support at " +
+				'<a target="_blank" href="mailto:info@flespi.com">info@flespi.com</a>' + ", or " +
+				'<a target="_blank" href="https://forum.flespi.com/">flespi forum</a>' + ", or " +
+				'<a target="_blank" href="https://github.com/flespi-software/examples/issues">at GitHub</a>' +
+			"</span>"));
+			if (err)
+				errorElement($("<pre>" + escapeHtmlEntities(err.stack) + "</pre>"));
+			else
+				error(errorMsg + " at line " + lineNumber);
 		}
 
 		function platform_fetch() {
