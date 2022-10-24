@@ -467,7 +467,13 @@
 				info("messages_rotate: " + messages_rotate);
 				console.log("messages_rotate", messages_rotate);
 				NextStep();
-				CreateJSON();
+				const sp = selected_device_type.configuration.properties.settings_polling;
+				if (sp && sp.type == "string" && sp.enum)
+					InputSettingsPollingPolicy();
+				else {
+					info("note: settings polling policy is not available for the selected device type");
+					CreateJSON();
+				}
 			}));
 			wizzard.append(" ");
 			wizzard.append($('<button>OR skip that step (no messages_rotate)</button>').click(function() {
