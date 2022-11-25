@@ -18,6 +18,10 @@ In short:
 4. configure your example to listen on `your-server:port` network endpoint and to handle a `/path-on-server` uri
 5. flespi platform will constantly deliver a batch of messages to your deployment
 
+## Message webhook listener
+
+* [NodeJS](msg-webhook-plugin-listener/nodejs)
+
 ## MQTT client examples
 
 [MQTT client source code examples](mqtt-client/) using the [flespi broker](https://flespi.com/mqtt-broker) on [**nodejs**](./mqtt-client/nodejs), [**python**](./mqtt-client/python), [**python on windows**](./mqtt-client/python-windows), [**lua**](./mqtt-client/lua), [**browser**](./mqtt-client/browser), [**micropython (esp8266)**](./mqtt-client/micropython), etc...
