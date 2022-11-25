@@ -21,6 +21,7 @@ In short:
 ## Message webhook listener
 
 * [NodeJS](msg-webhook-plugin-listener/nodejs)
+* [PHP](msg-webhook-plugin-listener/php)
 
 ## MQTT client examples
 
