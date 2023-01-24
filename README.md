@@ -43,6 +43,10 @@ A simple example of using mqtt to receive and display telemetry data from device
 
 * [Python](snapshots-downloader)
 
+## Snapshots uploader tool
+
+* [Python](snapshots-uploader)
+
 ## Devices creation tool
 
 This tool may help you to create many [devices](https://flespi.com/kb/device-virtual-instance-of-real-tracker) in your [flespi.io](https://flespi.io/) account.
