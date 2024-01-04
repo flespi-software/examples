@@ -1,6 +1,6 @@
 # message converter
 
-Script to convert flespi device messages to **JSON, KML, GPX, GEOJSON, CSV** formats
+Script to convert flespi device messages to **KML, GPX, GEOJSON, CSV** formats
 
 ### Run script
 ```bash

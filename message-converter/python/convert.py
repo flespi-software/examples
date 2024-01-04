@@ -3,8 +3,6 @@ import json
 import sys
 import time
 from datetime import datetime
-from xml.etree.ElementTree import Element, SubElement, tostring
-from xml.dom import minidom
 
 def main():
     # Read command line arguments
@@ -58,8 +56,8 @@ def convert_kml(data, device_id, from_timestamp, to_timestamp):
 <Placemark>
   <name>#{device_id}</name>
   <TimeSpan>
-    <begin>{format_unix_utc(from_timestamp)}</begin>
-    <end>{format_unix_utc(to_timestamp)}</end>
+    <begin>{format_unix_utc(int(from_timestamp))}</begin>
+    <end>{format_unix_utc(int(to_timestamp))}</end>
   </TimeSpan>
   <LineString>
     <coordinates>{coordinates}</coordinates>

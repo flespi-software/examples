@@ -21,7 +21,7 @@ In short:
 
 ## Device message converter script
 
-converts messages to **JSON, KML, GPX, GEOJSON, CSV**
+Converts messages to **KML, GPX, GEOJSON, CSV**
 
 * [NodeJS](message-converter/nodejs)
 * [Python](message-converter/python)
