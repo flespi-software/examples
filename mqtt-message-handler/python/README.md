@@ -1,8 +1,8 @@
-# flespi.io MQTT channel message listener
+# flespi.io MQTT device message listener
 
 MySQL database, [gmqtt](https://github.com/wialon/gmqtt) library, python 3.5+
 
-**Example:** [channel_message_listener.py](channel_message_listener.py)
+**Example:** [device_message_listener.py](device_message_listener.py)
 
 First of all you should **create a new table** in your database to handle messages.
 
@@ -27,7 +27,7 @@ First of all you should **create a new table** in your database to handle messag
 
 **Also you should configure the listener by changing these configuration lines:**
 
-    channel_id = '12345'
+    device_id = '12345'
     flespi_mqtt_host = 'mqtt.flespi.io'
     flespi_token = 'YOUR FLESPI TOKEN'
     mysql_host = 'localhost'
@@ -41,4 +41,4 @@ First of all you should **create a new table** in your database to handle messag
 
 **Then start the example:**
 
-    python3 channel_message_listener.py
+    python3 device_message_listener.py

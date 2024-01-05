@@ -43,7 +43,7 @@ A simple example of using mqtt to receive and display telemetry data from device
 
 * [HTML+JS+CSS](mqtt-telemetry-dashboard) with [mqtt.js](https://github.com/mqttjs/MQTT.js)
 
-## MQTT channel message handler
+## MQTT device message handler
 
 * [Python + MySQL](mqtt-message-handler/python)
 
