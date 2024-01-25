@@ -30,7 +30,7 @@ That may be a **Standard** token, a **Master** token (although using it in the e
 
 ## nodejs
 
-Example source code is located at [./nodejs/](./nodejs/) and [./nodejs-paho/](./nodejs-paho/)
+Example source code is located at [./nodejs/](./nodejs/) and [./nodejs-paho-ws/](./nodejs-paho-ws/)
 
 To run the example you need to install the dependencies ([mqtt](https://github.com/mqttjs/MQTT.js) package):
 
