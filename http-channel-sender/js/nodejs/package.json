@@ -1,0 +1,25 @@
+{
+  "name": "nodejs-fetch",
+  "version": "1.0.0",
+  "description": "Example of a script for sending a message to the flespi http channel",
+  "main": "send.js",
+  "scripts": {
+    "test": "node send.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flespi-software/examples.git#master"
+  },
+  "keywords": [
+    "http",
+    "channel",
+    "flespi",
+    "message"
+  ],
+  "author": "Evgenij Spitsyn spev@gurtam.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flespi-software/examples/issues"
+  },
+  "homepage": "https://github.com/flespi-software/examples/tree/master#readme"
+}
