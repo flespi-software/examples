@@ -177,3 +177,34 @@ Example source code is located at [./browser/](./browser/)
 You may run the example [in your browser from GitHub Pages](https://flespi-software.github.io/examples/mqtt-client/browser/example.html) or open the example.html file from your local file system.
 
 This example uses the [browser-version of the mqtt.js](https://github.com/mqttjs/MQTT.js#browser) library.
+
+## dart
+
+Example source code is located at [./dart/](./dart/)
+
+### Setup and Run
+
+1. **Navigate to the Dart project directory**:
+```sh
+cd dart
+```
+
+2. **Ensure you have Dart SDK installed, then initialize the project**:
+```sh
+dart pub get
+```
+
+3. **Set the Flespi token environment variable**:
+On Linux/macOS:
+```sh
+export FlespiToken=your_flespi_token
+```
+On Windows:
+```cmd
+set FlespiToken=your_flespi_token
+```
+
+4. **Run the Dart script**:
+```sh
+dart run lib/example.dart
+```
