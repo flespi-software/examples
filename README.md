@@ -33,7 +33,7 @@ Converts messages to **KML, GPX, GEOJSON, CSV**
 
 ## MQTT client examples
 
-[MQTT client source code examples](mqtt-client/) using the [flespi broker](https://flespi.com/mqtt-broker) on [**nodejs**](./mqtt-client/nodejs), [**python**](./mqtt-client/python), [**python on windows**](./mqtt-client/python-windows), [**lua**](./mqtt-client/lua), [**browser**](./mqtt-client/browser), [**micropython (esp8266)**](./mqtt-client/micropython), etc...
+[MQTT client source code examples](mqtt-client/) using the [flespi broker](https://flespi.com/mqtt-broker) on [**nodejs**](./mqtt-client/nodejs), [**python**](./mqtt-client/python), [**python on windows**](./mqtt-client/python-windows), [**lua**](./mqtt-client/lua), [**browser**](./mqtt-client/browser), [**micropython (esp8266)**](./mqtt-client/micropython), [**dart**](./mqtt-client/dart), etc...
 
 ## MQTT device telemetry dashboard example
 
