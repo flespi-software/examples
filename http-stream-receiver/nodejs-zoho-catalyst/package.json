@@ -1,7 +1,7 @@
 {
   "main": "index.js",
   "dependencies": {
-    "express": "4.21.1",
+    "express": "4.21.2",
     "zcatalyst-sdk-node": "1.5.0"
   }
 }
