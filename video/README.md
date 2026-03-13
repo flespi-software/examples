@@ -1,5 +1,7 @@
 # FLV stream player example
 
+[run it in your browser](https://flespi-software.github.io/examples/video/flv-player.html#your-stream-uuid-here)
+
 A standalone HTML page for low-latency playback of FLV streams from [flespi media server](https://flespi.com/kb/media-from-gps-trackers) using [mpegts.js](https://github.com/nicce/mpegts.js).
 
 **Example:** [flv-player.html](flv-player.html)
