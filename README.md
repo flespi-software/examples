@@ -59,6 +59,12 @@ A simple example of using mqtt to receive and display telemetry data from device
 
 * [Python](re-register_messages)
 
+## FLV stream player
+
+A standalone low-latency FLV stream player using [mpegts.js](https://github.com/nicce/mpegts.js). Pass a stream UUID in the URL hash to start playback.
+
+* [HTML+JS](video)
+
 ## Devices creation tool
 
 This tool may help you to create many [devices](https://flespi.com/kb/device-virtual-instance-of-real-tracker) in your [flespi.io](https://flespi.io/) account.

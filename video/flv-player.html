@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FLV Stream Player</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a1a; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; }
+    #container { position: relative; width: 100%; max-width: 960px; background: #000; aspect-ratio: 16/9; }
+    video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+    #overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 18px; pointer-events: none; }
+    #stats { position: absolute; top: 8px; right: 8px; color: #0f0; font-size: 12px; font-family: monospace; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <video id="player" muted autoplay></video>
+    <div id="overlay">Waiting for stream hash...</div>
+    <div id="stats"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.8.0/dist/mpegts.min.js"></script>
+  <script>
+    const MEDIA_BASE = 'https://media.flespi.io'
+    const FLV_CONFIG = {
+      enableStashBuffer: false,
+      stashInitialSize: 64,
+      autoCleanupSourceBuffer: true,
+      autoCleanupMaxBackwardDuration: 60,
+      autoCleanupMinBackwardDuration: 30,
+      lazyLoad: false,
+      lazyLoadMaxDuration: 0,
+      lazyLoadRecoverDuration: 0,
+      seekType: 'range',
+      enableWorker: true
+    }
+    const LATENCY_TARGET = 0.5
+    const LATENCY_THRESHOLD = 1.0
+    const LATENCY_MAX = 5
+    const CATCHUP_RATE_MIN = 1.05
+    const CATCHUP_RATE_MAX = 2.0
+    const STALL_TIMEOUT = 1500
+
+    // --- State ---
+    const video = document.getElementById('player')
+    const overlay = document.getElementById('overlay')
+    const stats = document.getElementById('stats')
+    let player = null
+    let chaserInterval = null
+    let stallTimer = null
+    let latencyTarget = LATENCY_TARGET
+
+    // --- Player lifecycle ---
+    function start (uuid) {
+      destroy()
+      overlay.textContent = 'Connecting...'
+
+      if (!mpegts.isSupported()) {
+        overlay.textContent = 'mpegts.js is not supported in this browser'
+        return
+      }
+
+      player = mpegts.createPlayer(
+        { type: 'flv', isLive: true, url: MEDIA_BASE + '/' + uuid },
+        FLV_CONFIG
+      )
+
+      player.attachMediaElement(video)
+      player.load()
+      video.play().catch(() => {})
+
+      player.on(mpegts.Events.ERROR, (type, detail, info) => {
+        console.error('mpegts error', type, detail, info)
+        overlay.textContent = 'Error: ' + detail
+      })
+
+      video.addEventListener('playing', onPlaying)
+      video.addEventListener('waiting', onWaiting)
+
+      latencyTarget = LATENCY_TARGET
+      startLatencyChaser()
+    }
+
+    function destroy () {
+      stopLatencyChaser()
+      clearStallTimer()
+      video.removeEventListener('playing', onPlaying)
+      video.removeEventListener('waiting', onWaiting)
+      if (player) {
+        player.pause()
+        player.unload()
+        player.detachMediaElement()
+        player.destroy()
+        player = null
+      }
+      stats.textContent = ''
+    }
+
+    // --- Latency chaser ---
+    function getLatency () {
+      if (!video.buffered.length) return 0
+      return video.buffered.end(video.buffered.length - 1) - video.currentTime
+    }
+
+    function seekToLiveEdge () {
+      if (!video.buffered.length) return
+      video.currentTime = video.buffered.end(video.buffered.length - 1) - latencyTarget
+    }
+
+    function startLatencyChaser () {
+      stopLatencyChaser()
+      chaserInterval = setInterval(() => {
+        if (video.paused) return
+        const latency = getLatency()
+
+        if (latency > LATENCY_MAX) {
+          seekToLiveEdge()
+          video.playbackRate = 1.0
+        } else if (latency > latencyTarget + LATENCY_THRESHOLD) {
+          const excess = latency - latencyTarget
+          const range = LATENCY_MAX - latencyTarget
+          const t = Math.min(excess / range, 1)
+          video.playbackRate = Math.min(CATCHUP_RATE_MIN + t * (CATCHUP_RATE_MAX - CATCHUP_RATE_MIN), CATCHUP_RATE_MAX)
+        } else if (video.playbackRate !== 1.0) {
+          video.playbackRate = 1.0
+        }
+
+        if (latencyTarget > LATENCY_TARGET) {
+          latencyTarget = Math.max(latencyTarget - 0.05, LATENCY_TARGET)
+        }
+
+        stats.textContent = 'latency: ' + latency.toFixed(2) + 's | rate: ' + video.playbackRate.toFixed(2) + 'x'
+      }, 500)
+    }
+
+    function stopLatencyChaser () {
+      if (chaserInterval) { clearInterval(chaserInterval); chaserInterval = null }
+    }
+
+    // --- Stall recovery ---
+    function clearStallTimer () {
+      if (stallTimer) { clearTimeout(stallTimer); stallTimer = null }
+    }
+
+    function onWaiting () {
+      latencyTarget = Math.min(latencyTarget + 0.3, LATENCY_MAX * 0.6)
+      video.playbackRate = 1.0
+
+      // skip gap
+      for (let i = 0; i < video.buffered.length; i++) {
+        if (video.buffered.start(i) > video.currentTime + 0.1) {
+          video.currentTime = video.buffered.start(i) + 0.1
+          return
+        }
+      }
+      // no data ahead — schedule seek to live edge
+      clearStallTimer()
+      stallTimer = setTimeout(() => {
+        if (!video.paused) seekToLiveEdge()
+      }, STALL_TIMEOUT)
+    }
+
+    function onPlaying () {
+      clearStallTimer()
+      overlay.textContent = ''
+    }
+
+    // --- Hash routing ---
+    function onHashChange () {
+      const uuid = location.hash.replace(/^#\/?/, '')
+      if (uuid) {
+        start(uuid)
+      } else {
+        destroy()
+        overlay.textContent = 'Add stream UUID to URL hash, e.g. #abc123-def456'
+      }
+    }
+
+    window.addEventListener('hashchange', onHashChange)
+    onHashChange()
+  </script>
+</body>
+</html>
