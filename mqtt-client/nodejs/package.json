@@ -16,6 +16,6 @@
   },
   "homepage": "https://github.com/flespi-software/examples#readme",
   "dependencies": {
-    "mqtt": "^5.0.0"
+    "mqtt": "^5.15.1"
   }
 }

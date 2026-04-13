@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/flespi-software/examples#readme",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.21.3"
   }
 }
